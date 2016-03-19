@@ -1,0 +1,1 @@
+# sanrio-character-ranking-viewer
