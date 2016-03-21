@@ -1,0 +1,12 @@
+{{define "main"}}<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{template "title" . }}</title>
+    <link rel="stylesheet" type="text/css" href="/assets/app.css" />
+    <script type="text/javascript" src="/assets/app.js" async></script>
+  </head>
+  <body>
+    {{template "content" . }}
+  </body>
+</html>{{end}}

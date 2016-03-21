@@ -1,0 +1,34 @@
+{
+  "name": "sanrio-character-ranking-viewer",
+  "version": "1.0.0",
+  "description": "Sanrio Character Ranking Viewer",
+  "main": "index.js",
+  "dependencies": {
+    "bootstrap-loader": "^1.0.10",
+    "bootstrap-sass": "^3.3.6",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "imports-loader": "^0.6.5",
+    "jquery": "^2.2.2",
+    "node-sass": "^3.4.2",
+    "resolve-url-loader": "^1.4.3",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.14"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mono0x/sanrio-character-ranking-viewer.git"
+  },
+  "author": "mono",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mono0x/sanrio-character-ranking-viewer/issues"
+  },
+  "homepage": "https://github.com/mono0x/sanrio-character-ranking-viewer#readme"
+}

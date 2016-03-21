@@ -1,0 +1,8 @@
+{{define "title"}}Sanrio Character Ranking Viewer{{end}}
+{{define "content"}}
+<table>
+  {{range .Ranking}}
+  <tr><td>{{.Name}}</td><td>{{.Count}}</td></tr>
+  {{end}}
+</table>
+{{end}}
