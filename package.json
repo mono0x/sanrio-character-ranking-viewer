@@ -19,6 +19,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "build": "node_modules/.bin/webpack -p --config webpack.config.js && go generate && go build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
