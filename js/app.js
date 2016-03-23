@@ -1,3 +1,2 @@
-require('bootstrap-loader');
-require('../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss');
+require('bootstrap-loader/extractStyles');
 require('../css/app.css');
