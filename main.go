@@ -21,7 +21,7 @@ import (
 )
 
 //go:generate ego -package main templates/
-//go:generate go-bindata assets/...
+//go:generate go-bindata -ignore .gitkeep assets/...
 
 type Character struct {
 	Id   int    `db:"id"`
