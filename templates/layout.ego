@@ -8,6 +8,8 @@
     <script type="text/javascript" src="/assets/app.js" async></script>
   </head>
   <body>
-    <% _ = render(w) %>
+    <div class="container">
+      <% _ = render(w) %>
+    </div>
   </body>
 </html>
