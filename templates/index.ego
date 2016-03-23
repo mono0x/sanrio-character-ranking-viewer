@@ -1,0 +1,7 @@
+<%! func renderIndex(w io.Writer, ranking []rankingView) error %>
+<%! ranking *[]rankingView %>
+<table>
+  <% for _, item := range ranking { %>
+  <tr><td><%= item.Name %></td><td><%= item.Count %></td></tr>
+  <% } %>
+</table>

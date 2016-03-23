@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -13,14 +14,14 @@ import (
 	"goji.io"
 	"goji.io/pat"
 
-	"github.com/arschles/go-bindata-html-template"
 	"github.com/braintree/manners"
 	"github.com/lestrrat/go-server-starter/listener"
 	_ "github.com/lib/pq"
 	"gopkg.in/gorp.v1"
 )
 
-//go:generate go-bindata assets/... tmpl/...
+//go:generate ego -package main templates/
+//go:generate go-bindata assets/...
 
 type Character struct {
 	Id   int    `db:"id"`
@@ -46,9 +47,13 @@ type Vote struct {
 	StatusId    int64 `db:"status_id"`
 }
 
+type rankingView struct {
+	Name  string
+	Count int
+}
+
 type appContext struct {
-	dbMap     *gorp.DbMap
-	templates map[string]*template.Template
+	dbMap *gorp.DbMap
 }
 
 type appHandler struct {
@@ -61,11 +66,6 @@ func (ah appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
-	type rankingView struct {
-		Name  string
-		Count int
-	}
-
 	var ranking []rankingView
 	if _, err := c.dbMap.Select(&ranking, `
 		SELECT
@@ -86,8 +86,9 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	c.templates["index"].Execute(w, map[string]interface{}{
-		"Ranking": &ranking,
+
+	_ = renderLayout(w, "Sanrio Character Ranking Viewer", func(w io.Writer) error {
+		return renderIndex(w, ranking)
 	})
 }
 
@@ -108,17 +109,6 @@ func main() {
 	dbMap.AddTableWithName(Vote{}, "vote")
 
 	context.dbMap = dbMap
-	context.templates = make(map[string]*template.Template, 0)
-
-	for _, name := range []string{
-		"index",
-	} {
-		t, err := template.New("main", Asset).ParseFiles("tmpl/layout.html", "tmpl/"+name+".html")
-		if err != nil {
-			log.Fatal(err)
-		}
-		context.templates[name] = t
-	}
 
 	signalChan := make(chan os.Signal)
 	signal.Notify(signalChan, syscall.SIGTERM)

@@ -1,12 +1,13 @@
-{{define "main"}}<!DOCTYPE html>
+<%! func renderLayout(w io.Writer, title string, render func(io.Writer) error) error %>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>{{template "title" . }}</title>
+    <title><%= title %></title>
     <link rel="stylesheet" type="text/css" href="/assets/app.css" />
     <script type="text/javascript" src="/assets/app.js" async></script>
   </head>
   <body>
-    {{template "content" . }}
+    <% _ = render(w) %>
   </body>
-</html>{{end}}
+</html>
