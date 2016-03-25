@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"io"
 	"log"
 	"net"
@@ -73,12 +72,9 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 		map[string]interface{}{
 			"today": time.Now(),
 		}); err != nil {
-		log.Println(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-
-	fmt.Println("ok")
 
 	var rankingItems []RankingItem
 	if _, err := c.dbMap.Select(&rankingItems, `
@@ -97,7 +93,6 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 	`, map[string]interface{}{
 		"ranking_id": ranking.Id,
 	}); err != nil {
-		log.Println(err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
