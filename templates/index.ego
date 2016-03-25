@@ -1,7 +1,8 @@
-<%! func renderIndex(w io.Writer, ranking []rankingView) error %>
+<%! func renderIndex(w io.Writer, ranking Ranking, rankingItems []RankingItem) error %>
 <h1>Sanrio Character Ranking Viewer</h1>
+<h2><%= ranking.Name %></h2>
 <table class="table table-striped">
-  <% for i, item := range ranking { %>
+  <% for i, item := range rankingItems { %>
   <tr><td><%= i + 1 %></td><td><%= item.Name %></td><td><%= item.Count %></td></tr>
   <% } %>
 </table>

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -47,7 +48,7 @@ type Vote struct {
 	StatusId    int64 `db:"status_id"`
 }
 
-type rankingView struct {
+type RankingItem struct {
 	Name  string
 	Count int
 }
@@ -66,8 +67,21 @@ func (ah appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
-	var ranking []rankingView
-	if _, err := c.dbMap.Select(&ranking, `
+	var ranking Ranking
+	if err := c.dbMap.SelectOne(&ranking,
+		`SELECT * FROM ranking WHERE started_on <= :today ORDER BY ended_on DESC, started_on DESC LIMIT 1`,
+		map[string]interface{}{
+			"today": time.Now(),
+		}); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	fmt.Println("ok")
+
+	var rankingItems []RankingItem
+	if _, err := c.dbMap.Select(&rankingItems, `
 		SELECT
 			character.name AS Name,
 			x.count AS Count
@@ -80,15 +94,16 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 		) x
 		JOIN character ON character.id = x.character_id
 		ORDER BY x.count DESC, character.name ASC
-	`, map[string]string{
-		"ranking_id": "1",
+	`, map[string]interface{}{
+		"ranking_id": ranking.Id,
 	}); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	_ = renderLayout(w, "Sanrio Character Ranking Viewer", func(w io.Writer) error {
-		return renderIndex(w, ranking)
+		return renderIndex(w, ranking, rankingItems)
 	})
 }
 
