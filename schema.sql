@@ -13,14 +13,14 @@ CREATE INDEX index_status_created_at_date ON statuses USING btree (
 );
 
 CREATE TABLE character (
-  id INTEGER NOT NULL,
+  id SERIAL NOT NULL,
   name VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX unique_index_character_name ON character USING btree (name);
 
 CREATE TABLE ranking (
-  id INTEGER NOT NULL,
+  id SERIAL NOT NULL,
   name VARCHAR(255) NOT NULL,
   started_on DATE NOT NULL,
   ended_on DATE NOT NULL,
