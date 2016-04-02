@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/mitchellh/cli"
 )
 
@@ -21,6 +22,8 @@ func (ah appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	_ = godotenv.Load()
+
 	c := cli.NewCLI("sanrio-character-ranking-viewer", "0.0.1")
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
