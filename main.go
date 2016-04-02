@@ -30,6 +30,9 @@ func main() {
 		"server": func() (cli.Command, error) {
 			return &Server{}, nil
 		},
+		"crawler": func() (cli.Command, error) {
+			return &Crawler{}, nil
+		},
 	}
 
 	exitStatus, err := c.Run()
