@@ -1,10 +1,24 @@
 package main
 
-import "time"
+import (
+	"time"
+
+	"gopkg.in/gorp.v1"
+)
 
 type Character struct {
 	Id   int    `db:"id"`
 	Name string `db:"name"`
+}
+
+func FindCharacterByName(dbMap *gorp.DbMap, name string) (*Character, error) {
+	var character Character
+	if err := dbMap.SelectOne(&character,
+		`SELECT * FROM character WHERE name = :name LIMIT 1`,
+		map[string]string{"name": name}); err != nil {
+		return nil, err
+	}
+	return &character, nil
 }
 
 type Status struct {
