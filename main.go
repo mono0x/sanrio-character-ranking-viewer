@@ -17,6 +17,7 @@ import (
 	"github.com/braintree/manners"
 	"github.com/lestrrat/go-server-starter/listener"
 	_ "github.com/lib/pq"
+	"github.com/mitchellh/cli"
 	"gopkg.in/gorp.v1"
 )
 
@@ -102,7 +103,13 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func main() {
+type Server struct{}
+
+func (s *Server) Help() string {
+	return `sanrio-character-ranking-viewer server`
+}
+
+func (s *Server) Run(args []string) int {
 	context := &appContext{}
 
 	db, err := sql.Open("postgres", "user=app dbname=sanrio-character-ranking sslmode=disable")
@@ -151,4 +158,28 @@ func main() {
 	mux.Handle(pat.Get("/"), &appHandler{context, handleIndex})
 
 	manners.Serve(l, mux)
+	return 0
+}
+
+func (s *Server) Synopsis() string {
+	return `Start server`
+}
+
+func main() {
+	c := cli.NewCLI("sanrio-character-ranking-viewer", "0.0.1")
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"": func() (cli.Command, error) {
+			return &Server{}, nil
+		},
+		"server": func() (cli.Command, error) {
+			return &Server{}, nil
+		},
+	}
+
+	exitStatus, err := c.Run()
+	if err != nil {
+		log.Println(err)
+	}
+	os.Exit(exitStatus)
 }
