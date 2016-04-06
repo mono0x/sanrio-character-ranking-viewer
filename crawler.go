@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/ChimeraCoder/anaconda"
 )
@@ -37,6 +38,8 @@ func (c *Crawler) Run(args []string) int {
 		"track": []string{"VoteSanrio"},
 	})
 
+	replacer := strings.NewReplacer("　", " ")
+
 	for {
 		select {
 		case item := <-stream.C:
@@ -66,7 +69,7 @@ func (c *Crawler) Run(args []string) int {
 					break
 				}
 
-				name := submatches[1]
+				name := replacer.Replace(submatches[1])
 
 				character, err := FindCharacterByName(context.dbMap, name)
 				if err != nil {
