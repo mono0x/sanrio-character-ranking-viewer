@@ -25,7 +25,8 @@ func newContext() (*appContext, error) {
 	dbMap.AddTableWithName(Character{}, "character").SetKeys(true, "Id")
 	dbMap.AddTableWithName(Status{}, "status").SetKeys(true, "Id")
 	dbMap.AddTableWithName(Ranking{}, "ranking").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Vote{}, "vote")
+	dbMap.AddTableWithName(Entry{}, "entry")
+	dbMap.AddTableWithName(Vote{}, "vote").SetKeys(true, "status_id")
 
 	context.dbMap = dbMap
 

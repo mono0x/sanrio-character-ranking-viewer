@@ -71,15 +71,15 @@ func (c *Crawler) Run(args []string) int {
 
 				name := replacer.Replace(submatches[1])
 
-				character, err := FindCharacterByName(context.dbMap, name)
+				entry, err := FindEntryByName(context.dbMap, 2, name)
 				if err != nil {
 					log.Print(err)
 					break
 				}
 
 				vote := Vote{
-					RankingId:   2,
-					CharacterId: character.Id,
+					RankingId:   entry.RankingId,
+					CharacterId: entry.CharacterId,
 					StatusId:    statusObject.Id,
 				}
 				if err := context.dbMap.Insert(&vote); err != nil {

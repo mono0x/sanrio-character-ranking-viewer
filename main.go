@@ -38,6 +38,9 @@ func main() {
 		"crawler": func() (cli.Command, error) {
 			return &Crawler{}, nil
 		},
+		"register": func() (cli.Command, error) {
+			return &Register{}, nil
+		},
 	}
 
 	exitStatus, err := c.Run()

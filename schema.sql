@@ -28,11 +28,17 @@ CREATE TABLE ranking (
 );
 CREATE INDEX index_ranking_ended_on_started_on ON ranking USING btree (ended_on, started_on);
 
-CREATE TABLE vote (
+CREATE TABLE entry (
   ranking_id INTEGER NOT NULL,
   character_id INTEGER NOT NULL,
-  status_id BIGINT NOT NULL,
-  PRIMARY KEY (ranking_id, character_id, status_id)
+  PRIMARY KEY (ranking_id, character_id)
 );
-CREATE UNIQUE INDEX unique_index_vote_status_id ON vote USING btree (status_id);
-CREATE UNIQUE INDEX unique_index_vote_character_id_status_id ON vote USING btree (character_id, status_id);
+CREATE INDEX index_entry_character_id_ranking_id ON entry USING btree (character_id);
+
+CREATE TABLE vote (
+  ranking_id INTEGER NOT NULL,
+  character_id INTEGER NOT NULL
+  status_id BIGINT NOT NULL,
+  PRIMARY KEY (status_id)
+);
+CREATE INDEX index_vote_ranking_id_character_id ON vote USING btree (ranking_id, character_id);
