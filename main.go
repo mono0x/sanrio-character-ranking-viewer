@@ -22,6 +22,8 @@ func (ah appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.SetFlags(log.Lshortfile)
+
 	_ = godotenv.Load()
 
 	c := cli.NewCLI("sanrio-character-ranking-viewer", "0.0.1")
