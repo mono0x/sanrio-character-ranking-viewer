@@ -19,7 +19,6 @@ func newContext() (*appContext, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer db.Close()
 
 	dbMap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
 
@@ -31,4 +30,8 @@ func newContext() (*appContext, error) {
 	context.dbMap = dbMap
 
 	return context, nil
+}
+
+func (c *appContext) Close() {
+	c.dbMap.Db.Close()
 }

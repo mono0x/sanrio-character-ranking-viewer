@@ -25,6 +25,7 @@ func (c *Crawler) Run(args []string) int {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer context.Close()
 
 	anaconda.SetConsumerKey(os.Getenv("TWITTER_CONSUMER_KEY"))
 	anaconda.SetConsumerSecret(os.Getenv("TWITTER_CONSUMER_SECRET"))

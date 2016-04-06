@@ -27,6 +27,7 @@ func (s *Server) Run(args []string) int {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer context.Close()
 
 	signalChan := make(chan os.Signal)
 	signal.Notify(signalChan, syscall.SIGTERM)
