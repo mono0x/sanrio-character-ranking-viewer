@@ -15,7 +15,7 @@ type appContext struct {
 func newContext() (*appContext, error) {
 	context := &appContext{}
 
-	db, err := sql.Open("postgres", "user=app dbname=sanrio-character-ranking sslmode=disable")
+	db, err := sql.Open("postgres", "user=app host=127.0.0.1 dbname=sanrio-character-ranking sslmode=disable")
 	if err != nil {
 		return nil, err
 	}
