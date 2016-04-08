@@ -88,8 +88,11 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 			x.count AS Count
 		FROM (
 			SELECT
-				character_id, COUNT(*) AS count
+				vote.character_id, COUNT(*) AS count
 			FROM vote
+			JOIN entry ON
+				entry.ranking_id = vote.ranking_id
+				AND entry.character_id = vote.character_id
 			WHERE vote.ranking_id = :ranking_id
 			GROUP BY vote.character_id
 		) x
