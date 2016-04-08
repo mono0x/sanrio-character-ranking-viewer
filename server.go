@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/braintree/manners"
+	"github.com/elithrar/goji-logger"
 	"github.com/lestrrat/go-server-starter/listener"
 	"goji.io"
 	"goji.io/pat"
@@ -56,6 +57,8 @@ func (s *Server) Run(args []string) int {
 	}
 
 	mux := goji.NewMux()
+	mux.UseC(logger.RequestID)
+	mux.UseC(logger.Logger)
 	mux.Handle(pat.Get("/assets/*"), http.FileServer(AssetFileSystem{}))
 	mux.Handle(pat.Get("/"), &appHandler{context, handleIndex})
 
