@@ -19,6 +19,9 @@ func newContext() (*appContext, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
 
 	dbMap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
 
