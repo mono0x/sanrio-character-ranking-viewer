@@ -73,10 +73,8 @@ func (s *Server) Synopsis() string {
 func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 	var ranking Ranking
 	if err := c.dbMap.SelectOne(&ranking,
-		`SELECT * FROM ranking WHERE started_on <= :today ORDER BY ended_on DESC, started_on DESC LIMIT 1`,
-		map[string]interface{}{
-			"today": time.Now(),
-		}); err != nil {
+		`SELECT * FROM ranking WHERE started_on <= $1 ORDER BY ended_on DESC, started_on DESC LIMIT 1`,
+		time.Now()); err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -93,14 +91,12 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 			JOIN entry ON
 				entry.ranking_id = vote.ranking_id
 				AND entry.character_id = vote.character_id
-			WHERE vote.ranking_id = :ranking_id
+			WHERE vote.ranking_id = $1
 			GROUP BY vote.character_id
 		) x
 		JOIN character ON character.id = x.character_id
 		ORDER BY x.count DESC, character.name ASC
-	`, map[string]interface{}{
-		"ranking_id": ranking.Id,
-	}); err != nil {
+	`, ranking.Id); err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

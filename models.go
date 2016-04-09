@@ -42,8 +42,8 @@ type RankingItem struct {
 
 func FindCharacterByName(dbMap *gorp.DbMap, name string) (*Character, error) {
 	var character Character
-	if err := dbMap.SelectOne(&character, `SELECT * FROM character WHERE name = :name LIMIT 1`,
-		map[string]string{"name": name}); err != nil {
+	if err := dbMap.SelectOne(&character,
+		`SELECT * FROM character WHERE name = $1 LIMIT 1`); err != nil {
 		return nil, err
 	}
 	return &character, nil
@@ -55,13 +55,10 @@ func FindEntryByName(dbMap *gorp.DbMap, rankingId int, name string) (*Entry, err
 		SELECT * FROM entry
 		JOIN character ON character.id = entry.character_id
 		WHERE
-			entry.ranking_id = :ranking_id
-			AND character.name = :name
+			entry.ranking_id = $1
+			AND character.name = $2
 		LIMIT 1
-	`, map[string]string{
-		"ranking_id": string(rankingId),
-		"name":       name,
-	}); err != nil {
+	`, rankingId, name); err != nil {
 		return nil, err
 	}
 	return &entry, nil
