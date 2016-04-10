@@ -18,11 +18,11 @@ import (
 )
 
 const (
-	SearchWord = "VoteSanrio"
+	SearchWord = "サンリオキャラクター大賞"
 )
 
 var (
-	pattern       = regexp.MustCompile(`サンリオキャラクター大賞で(.+?)に投票したよ`)
+	pattern       = regexp.MustCompile(`(.+?)を、「(?:.+?)」なでました！みんなもなでてみよう！`)
 	spaceReplacer = strings.NewReplacer("　", " ")
 )
 
