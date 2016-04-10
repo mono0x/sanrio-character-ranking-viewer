@@ -26,10 +26,10 @@ func newContext() (*appContext, error) {
 	dbMap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
 
 	dbMap.AddTableWithName(Character{}, "character").SetKeys(true, "Id")
-	dbMap.AddTableWithName(Status{}, "status").SetKeys(true, "Id")
+	dbMap.AddTableWithName(Status{}, "status")
 	dbMap.AddTableWithName(Ranking{}, "ranking").SetKeys(true, "Id")
 	dbMap.AddTableWithName(Entry{}, "entry")
-	dbMap.AddTableWithName(Vote{}, "vote").SetKeys(true, "status_id")
+	dbMap.AddTableWithName(Vote{}, "vote")
 
 	context.dbMap = dbMap
 

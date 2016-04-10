@@ -179,7 +179,7 @@ func processStatus(dbMap *gorp.DbMap, status anaconda.Tweet) error {
 	vote := Vote{
 		RankingId:   entry.RankingId,
 		CharacterId: entry.CharacterId,
-		StatusId:    statusObject.Id,
+		StatusId:    status.Id,
 	}
 	if err := dbMap.Insert(&vote); err != nil {
 		return err
