@@ -22,8 +22,12 @@ const (
 )
 
 var (
-	pattern       = regexp.MustCompile(`(.+?)を、「(?:.+?)」なでました！みんなもなでてみよう！`)
-	spaceReplacer = strings.NewReplacer("　", " ")
+	pattern        = regexp.MustCompile(`(?::\s+)?(.+?)を、「(?:.+?)」なでました！みんなもなでてみよう！`)
+	spaceReplacer  = strings.NewReplacer("　", " ")
+	normalizeTable = map[string]string{
+		"ちんじゅうみん＆ ゴーちゃん。": "ちんじゅうみん＆ゴーちゃん。",
+		"歯ぐるマンスタイル":       "歯ぐるまんすたいる",
+	}
 )
 
 type Crawler struct{}
@@ -137,39 +141,44 @@ func (c *Crawler) Synopsis() string {
 	return `Start crawler`
 }
 
-func processStatus(dbMap *gorp.DbMap, status anaconda.Tweet) error {
-	createdAt, err := status.CreatedAtTime()
-	if err != nil {
-		return err
-	}
-
-	count, err := dbMap.SelectInt(`SELECT COUNT(*) FROM status WHERE id = $1`, status.Id)
-	if err != nil {
-		return err
-	}
-	if count != 0 {
+func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet) error {
+	if receivedStatus.Retweeted {
 		return nil
 	}
 
-	statusJson, err := json.Marshal(&status)
-	if err != nil {
-		return err
-	}
-	statusObject := Status{
-		Id:        status.Id,
-		CreatedAt: createdAt,
-		Source:    string(statusJson),
-	}
-	if err := dbMap.Insert(&statusObject); err != nil {
-		return err
+	var status Status
+	if err := dbMap.SelectOne(&status,
+		`SELECT * FROM status WHERE id = $1`, receivedStatus.Id); err != nil {
+
+		createdAt, err := receivedStatus.CreatedAtTime()
+		if err != nil {
+			return err
+		}
+
+		statusJson, err := json.Marshal(&receivedStatus)
+		if err != nil {
+			return err
+		}
+		status = Status{
+			Id:        receivedStatus.Id,
+			CreatedAt: createdAt,
+			Source:    string(statusJson),
+		}
+		if err := dbMap.Insert(&status); err != nil {
+			return err
+		}
 	}
 
-	submatches := pattern.FindStringSubmatch(status.Text)
+	submatches := pattern.FindStringSubmatch(receivedStatus.Text)
 	if submatches == nil {
 		return nil
 	}
 
 	name := spaceReplacer.Replace(submatches[1])
+	if normalizedName, ok := normalizeTable[name]; ok {
+		name = normalizedName
+	}
+	log.Print(status.Id, name)
 
 	entry, err := FindEntryByName(dbMap, 2, name)
 	if err != nil {
