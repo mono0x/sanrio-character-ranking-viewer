@@ -157,6 +157,7 @@ func processStatus(dbMap *gorp.DbMap, status anaconda.Tweet) error {
 		return err
 	}
 	statusObject := Status{
+		Id:        status.Id,
 		CreatedAt: createdAt,
 		Source:    string(statusJson),
 	}
