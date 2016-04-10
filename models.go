@@ -52,7 +52,7 @@ func FindCharacterByName(dbMap *gorp.DbMap, name string) (*Character, error) {
 func FindEntryByName(dbMap *gorp.DbMap, rankingId int, name string) (*Entry, error) {
 	var entry Entry
 	if err := dbMap.SelectOne(&entry, `
-		SELECT * FROM entry
+		SELECT entry.* FROM entry
 		JOIN character ON character.id = entry.character_id
 		WHERE
 			entry.ranking_id = $1
