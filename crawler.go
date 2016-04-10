@@ -121,12 +121,11 @@ func (c *Crawler) Run(args []string) int {
 
 		for {
 			s := <-signalChan
-			if s == syscall.SIGTERM {
-				for _, quitChan := range quitChans {
-					quitChan <- struct{}{}
-				}
-				break
+			log.Print(s)
+			for _, quitChan := range quitChans {
+				quitChan <- struct{}{}
 			}
+			break
 		}
 	}()
 
