@@ -48,9 +48,12 @@ func (c *Crawler) Run(args []string) int {
 	defer context.Close()
 
 	characters, err := GetEntryCharacters(context.dbMap, RankingId)
-	parts := make([]string, len(characters))
+	parts := make([]string, len(characters)+len(normalizeTable))
 	for _, character := range characters {
 		parts = append(parts, regexp.QuoteMeta(character.Name))
+	}
+	for name, _ := range normalizeTable {
+		parts = append(parts, regexp.QuoteMeta(name))
 	}
 	pattern = regexp.MustCompile(
 		`(` + strings.Join(parts, `|`) + `)を、「(?:.+?)」なでました！みんなもなでてみよう！`)
