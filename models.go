@@ -40,6 +40,32 @@ type RankingItem struct {
 	Count int
 }
 
+func GetCurrentRanking(dbMap *gorp.DbMap, time time.Time) (*Ranking, error) {
+	var ranking Ranking
+	if err := dbMap.SelectOne(&ranking, `
+		SELECT * FROM ranking
+		WHERE $1 BETWEEN started_on AND ended_on
+		ORDER BY id DESC
+		LIMIT 1
+	`, time); err != nil {
+		return nil, err
+	}
+	return &ranking, nil
+}
+
+func GetLatestRanking(dbMap *gorp.DbMap, time time.Time) (*Ranking, error) {
+	var ranking Ranking
+	if err := dbMap.SelectOne(&ranking, `
+		SELECT * FROM ranking
+		WHERE $1 >= started_on
+		ORDER BY id DESC
+		LIMIT 1
+	`, time); err != nil {
+		return nil, err
+	}
+	return &ranking, nil
+}
+
 func FindCharacterByName(dbMap *gorp.DbMap, name string) (*Character, error) {
 	var character Character
 	if err := dbMap.SelectOne(&character,

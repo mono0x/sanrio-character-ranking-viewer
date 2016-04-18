@@ -71,10 +71,8 @@ func (s *Server) Synopsis() string {
 }
 
 func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
-	var ranking Ranking
-	if err := c.dbMap.SelectOne(&ranking,
-		`SELECT * FROM ranking WHERE started_on <= $1 ORDER BY ended_on DESC, started_on DESC LIMIT 1`,
-		time.Now()); err != nil {
+	ranking, err := GetLatestRanking(c.dbMap, time.Now())
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

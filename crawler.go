@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
 	"gopkg.in/gorp.v1"
 
@@ -19,7 +20,6 @@ import (
 
 const (
 	SearchWord = "サンリオキャラクター大賞"
-	RankingId  = 2
 )
 
 var (
@@ -47,7 +47,12 @@ func (c *Crawler) Run(args []string) int {
 	}
 	defer context.Close()
 
-	characters, err := GetEntryCharacters(context.dbMap, RankingId)
+	ranking, err := GetCurrentRanking(context.dbMap, time.Now())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	characters, err := GetEntryCharacters(context.dbMap, ranking.Id)
 	parts := make([]string, len(characters)+len(normalizeTable))
 	for _, character := range characters {
 		parts = append(parts, regexp.QuoteMeta(character.Name))
@@ -85,7 +90,7 @@ func (c *Crawler) Run(args []string) int {
 		for {
 			select {
 			case status := <-statusChan:
-				if err := processStatus(context.dbMap, status); err != nil {
+				if err := processStatus(context.dbMap, status, ranking); err != nil {
 					log.Print(err)
 				}
 				break
@@ -156,7 +161,7 @@ func (c *Crawler) Synopsis() string {
 	return `Start crawler`
 }
 
-func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet) error {
+func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet, ranking *Ranking) error {
 	if receivedStatus.RetweetedStatus != nil {
 		return nil
 	}
@@ -195,7 +200,7 @@ func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet) error {
 	}
 	log.Print(status.Id, name)
 
-	entry, err := FindEntryByName(dbMap, RankingId, name)
+	entry, err := FindEntryByName(dbMap, ranking.Id, name)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-<%! func renderIndex(w io.Writer, ranking Ranking, rankingItems []RankingItem) error %>
+<%! func renderIndex(w io.Writer, ranking *Ranking, rankingItems []RankingItem) error %>
 <h1>Sanrio Character Ranking Viewer</h1>
 <h2><%= ranking.Name %></h2>
 <table class="table table-striped">
