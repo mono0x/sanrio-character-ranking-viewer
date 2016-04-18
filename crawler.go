@@ -19,16 +19,18 @@ import (
 
 const (
 	SearchWord = "サンリオキャラクター大賞"
+	RankingId  = 2
 )
 
 var (
-	pattern        = regexp.MustCompile(`(?::\s+)?(.+?)を、「(?:.+?)」なでました！みんなもなでてみよう！`)
 	spaceReplacer  = strings.NewReplacer("　", " ")
 	normalizeTable = map[string]string{
 		"ちんじゅうみん＆ ゴーちゃん。": "ちんじゅうみん＆ゴーちゃん。",
 		"歯ぐるマンスタイル":       "歯ぐるまんすたいる",
 	}
 )
+
+var pattern *regexp.Regexp
 
 type Crawler struct{}
 
@@ -42,6 +44,14 @@ func (c *Crawler) Run(args []string) int {
 		log.Fatal(err)
 	}
 	defer context.Close()
+
+	characters, err := GetEntryCharacters(context.dbMap, RankingId)
+	parts := make([]string, len(characters))
+	for _, character := range characters {
+		parts = append(parts, regexp.QuoteMeta(character.Name))
+	}
+	pattern = regexp.MustCompile(
+		`(` + strings.Join(parts, `|`) + `)を、「(?:.+?)」なでました！みんなもなでてみよう！`)
 
 	anaconda.SetConsumerKey(os.Getenv("TWITTER_CONSUMER_KEY"))
 	anaconda.SetConsumerSecret(os.Getenv("TWITTER_CONSUMER_SECRET"))
@@ -142,7 +152,7 @@ func (c *Crawler) Synopsis() string {
 }
 
 func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet) error {
-	if receivedStatus.Retweeted {
+	if receivedStatus.RetweetedStatus != nil {
 		return nil
 	}
 
@@ -180,7 +190,7 @@ func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet) error {
 	}
 	log.Print(status.Id, name)
 
-	entry, err := FindEntryByName(dbMap, 2, name)
+	entry, err := FindEntryByName(dbMap, RankingId, name)
 	if err != nil {
 		return err
 	}

@@ -63,3 +63,16 @@ func FindEntryByName(dbMap *gorp.DbMap, rankingId int, name string) (*Entry, err
 	}
 	return &entry, nil
 }
+
+func GetEntryCharacters(dbMap *gorp.DbMap, rankingId int) ([]Character, error) {
+	var characters []Character
+	if _, err := dbMap.Select(&characters, `
+		SELECT character.* FROM character
+		JOIN entry ON
+			entry.character_id = character.id
+			AND entry.ranking_id = $1
+	`, rankingId); err != nil {
+		return nil, err
+	}
+	return characters, nil
+}
