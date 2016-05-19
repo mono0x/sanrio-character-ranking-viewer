@@ -1,0 +1,58 @@
+hash: dec69c9b2c6ec65e979425f27fb89d54e9412ad6b835d89e2894c22bf142d0dd
+updated: 2016-05-19T21:50:26.825167346+09:00
+imports:
+- name: github.com/armon/go-radix
+  version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
+- name: github.com/azr/backoff
+  version: 53511d3c733003985b0b76f733df1f4d0095ee6a
+- name: github.com/bgentry/speakeasy
+  version: 36e9cfdd690967f4f690c6edcc9ffacd006014a0
+- name: github.com/braintree/manners
+  version: 82a8879fc5fd0381fa8b2d8033b19bf255252088
+- name: github.com/ChimeraCoder/anaconda
+  version: 91bfbf5de08def2e8b5480b52cae811d2bde3af9
+- name: github.com/ChimeraCoder/tokenbucket
+  version: c5a927568de7aad8a58127d80bcd36ca4e71e454
+- name: github.com/dustin/go-jsonpointer
+  version: 2efc9fef1d9421a8d252a32e20beb10cecd2bbca
+- name: github.com/dustin/gojson
+  version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
+- name: github.com/elithrar/goji-logger
+  version: 883c1fead602c18e8aac28c8d108b4266fe8d752
+- name: github.com/garyburd/go-oauth
+  version: 719b069913e1151a73ea30d2ea4f90deda3ce234
+  subpackages:
+  - oauth
+- name: github.com/joho/godotenv
+  version: 4ed13390c0acd2ff4e371e64d8b97c8954138243
+- name: github.com/lestrrat/go-server-starter
+  version: 901cec093d58ca36652e8d7906e4bd3e32793801
+  subpackages:
+  - listener
+- name: github.com/lib/pq
+  version: ee1442bda7bd1b6a84e913bdb421cb1874ec629d
+  subpackages:
+  - oid
+- name: github.com/mattn/go-isatty
+  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
+- name: github.com/mitchellh/cli
+  version: 168daae10d6ff81b8b1201b0a4c9607d7e9b82e3
+- name: github.com/robfig/cron
+  version: 8dc4916d418b9d0b2e23c9c1e68351dc9a1d6573
+- name: goji.io
+  version: e355964ac565b94cf0fc7f218346626529125086
+  subpackages:
+  - pat
+  - internal
+  - pattern
+- name: golang.org/x/net
+  version: 5916dcb167ed985a5b9e6871fbfd74848a4c170b
+  subpackages:
+  - context
+- name: golang.org/x/sys
+  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
+  subpackages:
+  - unix
+- name: gopkg.in/gorp.v1
+  version: c87af80f3cc5036b55b83d77171e156791085e2e
+devImports: []

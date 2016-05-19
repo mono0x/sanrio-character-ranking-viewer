@@ -4,3 +4,4 @@
 /node_modules/
 /sanrio-character-ranking-viewer
 /.env
+/vendor/
