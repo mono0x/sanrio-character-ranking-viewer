@@ -167,7 +167,8 @@ func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet, ranking *Ra
 	}
 
 	var status Status
-	if err := dbMap.Get(&status, receivedStatus.Id); err != nil {
+	obj, err := dbMap.Get(Status{}, receivedStatus.Id)
+	if err != nil {
 		createdAt, err := receivedStatus.CreatedAtTime()
 		if err != nil {
 			return err
@@ -185,6 +186,8 @@ func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet, ranking *Ra
 		if err := dbMap.Insert(&status); err != nil {
 			return err
 		}
+	} else {
+		status = *obj.(*Status)
 	}
 
 	submatches := pattern.FindStringSubmatch(receivedStatus.Text)
