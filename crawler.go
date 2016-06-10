@@ -67,6 +67,7 @@ func (c *Crawler) Run(args []string) int {
 	anaconda.SetConsumerSecret(os.Getenv("TWITTER_CONSUMER_SECRET"))
 
 	api := anaconda.NewTwitterApi(os.Getenv("TWITTER_OAUTH_TOKEN"), os.Getenv("TWITTER_OAUTH_TOKEN_SECRET"))
+	api.SetLogger(anaconda.BasicLogger)
 
 	stream := api.PublicStreamFilter(url.Values{
 		"track": []string{SearchWord},
@@ -119,19 +120,27 @@ func (c *Crawler) Run(args []string) int {
 	}()
 
 	cron := cron.New()
-	cron.AddFunc("0 */5 * * * *", func() {
+	cron.AddFunc("0 0 */12 * * *", func() {
 		waitGroup.Add(1)
 		defer waitGroup.Done()
 
 		v := url.Values{}
-		v.Set("count", "200")
+		v.Set("count", "100")
+		v.Set("result_type", "recent")
 		searchResult, err := api.GetSearch(SearchWord, v)
 		if err != nil {
 			log.Print(err)
 			return
 		}
-		for _, status := range searchResult.Statuses {
-			statusChan <- status
+		for len(searchResult.Statuses) > 0 {
+			for _, status := range searchResult.Statuses {
+				statusChan <- status
+			}
+			searchResult, err = searchResult.GetNext(api)
+			if err != nil {
+				log.Print(err)
+				break
+			}
 		}
 	})
 	cron.Start()
