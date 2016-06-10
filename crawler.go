@@ -168,7 +168,7 @@ func processStatus(dbMap *gorp.DbMap, receivedStatus anaconda.Tweet, ranking *Ra
 
 	var status Status
 	obj, err := dbMap.Get(Status{}, receivedStatus.Id)
-	if err != nil {
+	if obj == nil || err != nil {
 		createdAt, err := receivedStatus.CreatedAtTime()
 		if err != nil {
 			return err
