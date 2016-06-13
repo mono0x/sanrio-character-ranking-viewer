@@ -40,9 +40,9 @@ type RankingItem struct {
 	Count int
 }
 
-func GetCurrentRanking(dbMap *gorp.DbMap, time time.Time) (*Ranking, error) {
+func GetCurrentRanking(executor gorp.SqlExecutor, time time.Time) (*Ranking, error) {
 	var ranking Ranking
-	if err := dbMap.SelectOne(&ranking, `
+	if err := executor.SelectOne(&ranking, `
 		SELECT * FROM ranking
 		WHERE $1 BETWEEN started_on AND ended_on
 		ORDER BY id DESC
@@ -53,9 +53,9 @@ func GetCurrentRanking(dbMap *gorp.DbMap, time time.Time) (*Ranking, error) {
 	return &ranking, nil
 }
 
-func GetLatestRanking(dbMap *gorp.DbMap, time time.Time) (*Ranking, error) {
+func GetLatestRanking(executor gorp.SqlExecutor, time time.Time) (*Ranking, error) {
 	var ranking Ranking
-	if err := dbMap.SelectOne(&ranking, `
+	if err := executor.SelectOne(&ranking, `
 		SELECT * FROM ranking
 		WHERE $1 >= started_on
 		ORDER BY id DESC
@@ -66,18 +66,18 @@ func GetLatestRanking(dbMap *gorp.DbMap, time time.Time) (*Ranking, error) {
 	return &ranking, nil
 }
 
-func FindCharacterByName(dbMap *gorp.DbMap, name string) (*Character, error) {
+func FindCharacterByName(executor gorp.SqlExecutor, name string) (*Character, error) {
 	var character Character
-	if err := dbMap.SelectOne(&character,
+	if err := executor.SelectOne(&character,
 		`SELECT * FROM character WHERE name = $1 LIMIT 1`); err != nil {
 		return nil, err
 	}
 	return &character, nil
 }
 
-func FindEntryByName(dbMap *gorp.DbMap, rankingId int, name string) (*Entry, error) {
+func FindEntryByName(executor gorp.SqlExecutor, rankingId int, name string) (*Entry, error) {
 	var entry Entry
-	if err := dbMap.SelectOne(&entry, `
+	if err := executor.SelectOne(&entry, `
 		SELECT entry.* FROM entry
 		JOIN character ON character.id = entry.character_id
 		WHERE
@@ -90,9 +90,9 @@ func FindEntryByName(dbMap *gorp.DbMap, rankingId int, name string) (*Entry, err
 	return &entry, nil
 }
 
-func GetEntryCharacters(dbMap *gorp.DbMap, rankingId int) ([]Character, error) {
+func GetEntryCharacters(executor gorp.SqlExecutor, rankingId int) ([]Character, error) {
 	var characters []Character
-	if _, err := dbMap.Select(&characters, `
+	if _, err := executor.Select(&characters, `
 		SELECT character.* FROM character
 		JOIN entry ON
 			entry.character_id = character.id
