@@ -102,3 +102,27 @@ func GetEntryCharacters(executor gorp.SqlExecutor, rankingId int) ([]Character, 
 	}
 	return characters, nil
 }
+
+func GetRankingItems(executor gorp.SqlExecutor, rankingId int) ([]RankingItem, error) {
+	var rankingItems []RankingItem
+	if _, err := executor.Select(&rankingItems, `
+		SELECT
+			character.name AS Name,
+			x.count AS Count
+		FROM (
+			SELECT
+				vote.character_id, COUNT(*) AS count
+			FROM vote
+			JOIN entry ON
+				entry.ranking_id = vote.ranking_id
+				AND entry.character_id = vote.character_id
+			WHERE vote.ranking_id = $1
+			GROUP BY vote.character_id
+		) x
+		JOIN character ON character.id = x.character_id
+		ORDER BY x.count DESC, character.name ASC
+	`, rankingId); err != nil {
+		return nil, err
+	}
+	return rankingItems, nil
+}

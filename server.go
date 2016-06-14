@@ -10,10 +10,11 @@ import (
 	"syscall"
 	"time"
 
+	"goji.io"
+
 	"github.com/braintree/manners"
 	"github.com/elithrar/goji-logger"
 	"github.com/lestrrat/go-server-starter/listener"
-	"goji.io"
 	"goji.io/pat"
 )
 
@@ -77,24 +78,8 @@ func handleIndex(c *appContext, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var rankingItems []RankingItem
-	if _, err := c.dbMap.Select(&rankingItems, `
-		SELECT
-			character.name AS Name,
-			x.count AS Count
-		FROM (
-			SELECT
-				vote.character_id, COUNT(*) AS count
-			FROM vote
-			JOIN entry ON
-				entry.ranking_id = vote.ranking_id
-				AND entry.character_id = vote.character_id
-			WHERE vote.ranking_id = $1
-			GROUP BY vote.character_id
-		) x
-		JOIN character ON character.id = x.character_id
-		ORDER BY x.count DESC, character.name ASC
-	`, ranking.Id); err != nil {
+	rankingItems, err := GetRankingItems(c.dbMap, ranking.Id)
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
