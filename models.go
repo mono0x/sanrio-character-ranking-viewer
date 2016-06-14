@@ -36,6 +36,7 @@ type Vote struct {
 }
 
 type RankingItem struct {
+	Rank  int
 	Name  string
 	Count int
 }
@@ -107,6 +108,7 @@ func GetRankingItems(executor gorp.SqlExecutor, rankingId int) ([]RankingItem, e
 	var rankingItems []RankingItem
 	if _, err := executor.Select(&rankingItems, `
 		SELECT
+			RANK() OVER (ORDER BY x.count DESC) AS Rank,
 			character.name AS Name,
 			x.count AS Count
 		FROM (

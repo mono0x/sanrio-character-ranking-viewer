@@ -2,7 +2,7 @@
 <h1>Sanrio Character Ranking Viewer</h1>
 <h2><%= ranking.Name %></h2>
 <table class="table table-striped">
-  <% for i, item := range rankingItems { %>
-  <tr><td><%= i + 1 %></td><td><%= item.Name %></td><td><%= item.Count %></td></tr>
+  <% for _, item := range rankingItems { %>
+  <tr><td><%= item.Rank %></td><td><%= item.Name %></td><td><%= item.Count %></td></tr>
   <% } %>
 </table>
