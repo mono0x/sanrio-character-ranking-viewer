@@ -41,7 +41,7 @@ func (c *Crawler) Help() string {
 }
 
 func (c *Crawler) Run(args []string) int {
-	context, err := newContext()
+	context, err := NewAppContext()
 	if err != nil {
 		log.Fatal(err)
 	}

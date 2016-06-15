@@ -9,7 +9,7 @@ func (r *Register) Help() string {
 }
 
 func (r *Register) Run(args []string) int {
-	context, err := newContext()
+	context, err := NewAppContext()
 	if err != nil {
 		log.Fatal(err)
 	}

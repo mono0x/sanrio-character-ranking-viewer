@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -11,15 +10,6 @@ import (
 
 //go:generate ego -package main templates/
 //go:generate go-bindata -ignore .gitkeep assets/...
-
-type appHandler struct {
-	*appContext
-	handler func(*appContext, http.ResponseWriter, *http.Request)
-}
-
-func (ah appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ah.handler(ah.appContext, w, r)
-}
 
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)

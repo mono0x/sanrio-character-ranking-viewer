@@ -8,12 +8,12 @@ import (
 	"gopkg.in/gorp.v1"
 )
 
-type appContext struct {
+type AppContext struct {
 	dbMap *gorp.DbMap
 }
 
-func newContext() (*appContext, error) {
-	context := &appContext{}
+func NewAppContext() (*AppContext, error) {
+	context := &AppContext{}
 
 	db, err := sql.Open("postgres", "user=app host=127.0.0.1 dbname=sanrio-character-ranking sslmode=disable")
 	if err != nil {
@@ -36,6 +36,6 @@ func newContext() (*appContext, error) {
 	return context, nil
 }
 
-func (c *appContext) Close() {
+func (c *AppContext) Close() {
 	c.dbMap.Db.Close()
 }
